@@ -1,12 +1,15 @@
+import 'package:fitforge/screens/ProfileSetUpScreen.dart';
 import 'package:fitforge/screens/admin_dashboard.dart';
 import 'package:fitforge/screens/home_screen.dart';
+import 'package:fitforge/screens/Profilesetupscreen.dart'
+    hide Profilesetupscreen, ProfileSetupScreen; // ← NEW
 import 'package:fitforge/screens/register_screen.dart';
 import 'package:fitforge/utils/validators.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool startAsAdmin;
@@ -42,34 +45,65 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"}, // ← SAME AS REGISTER
+        headers: {"Content-Type": "application/json"},
         body: json.encode({
-          // ← SAME AS REGISTER
           "email": emailController.text.trim(),
           "password": passwordController.text,
           "role": isAdmin ? "admin" : "user",
         }),
       );
 
-      // Debug print
       print("Status: ${response.statusCode}");
       print("Body: ${response.body}");
 
       final data = json.decode(response.body);
 
       if (data['success'] == true) {
+        final userData = data['user'];
+        final bool profileCompleted = userData['profile_completed'] ?? false;
+
         Fluttertoast.showToast(
-          msg: "Welcome ${data['user']['name']}!",
+          msg: "Welcome ${userData['name']}!",
           backgroundColor: Colors.green,
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => isAdmin
-                ? AdminDashboard() // ← YOUR ADMIN SCREEN
-                : HomeScreen(),
-          ),
-        );
+
+        if (isAdmin) {
+          // Admin login → go directly to dashboard
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => AdminDashboard()),
+            (route) => false,
+          );
+        } else {
+          // Normal user
+          if (profileCompleted) {
+            // Already completed profile → go to HomeScreen
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => HomeScreen()),
+              (route) => false,
+            );
+          } else {
+            // First-time user → go to ProfileSetupScreen
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ProfileSetupScreen(
+                  userId: userData['id'],
+                  userName: userData['name'],
+                  onComplete: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HomeScreen()),
+                      (route) => false,
+                    );
+                  },
+                ),
+              ),
+              (route) => false,
+            );
+          }
+        }
       } else {
         Fluttertoast.showToast(
           msg: data['message'],
@@ -77,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      print('Error: $e');
       Fluttertoast.showToast(msg: "No internet");
     }
 

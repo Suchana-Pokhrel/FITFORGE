@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PlanDetailScreen extends StatefulWidget {
-  const PlanDetailScreen({super.key});
+  const PlanDetailScreen({super.key, required plans, required bool isBeginner});
 
   @override
   State<PlanDetailScreen> createState() => _PlanDetailScreenState();
