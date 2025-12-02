@@ -1,4 +1,3 @@
-import 'package:fitforge/screens/home_screen.dart';
 import 'package:fitforge/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 

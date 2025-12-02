@@ -1,8 +1,7 @@
 import 'package:fitforge/screens/ProfileSetUpScreen.dart';
 import 'package:fitforge/screens/admin_dashboard.dart';
 import 'package:fitforge/screens/home_screen.dart';
-import 'package:fitforge/screens/Profilesetupscreen.dart'
-    hide Profilesetupscreen, ProfileSetupScreen; // ← NEW
+// ← NEW
 import 'package:fitforge/screens/register_screen.dart';
 import 'package:fitforge/utils/validators.dart';
 import 'package:flutter/material.dart';

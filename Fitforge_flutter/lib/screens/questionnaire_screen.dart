@@ -1,5 +1,4 @@
 import 'package:fitforge/screens/Result_Screen.dart';
-import 'package:fitforge/screens/plan_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';

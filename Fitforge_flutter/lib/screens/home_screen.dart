@@ -1,69 +1,11 @@
-import 'dart:convert';
-
-import 'package:fitforge/screens/Result_Screen.dart';
-import 'package:fitforge/screens/plan_detail_screen.dart';
 import 'package:fitforge/screens/questionnaire_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   //Auto generated plan for total beginner
-  Future<void> _generateBeginnerPlan(BuildContext context) async {
-    const url = "http://192.168.1.9:8080/fitforge_backend/api/recommend.php";
-
-    final beginnerData = {
-      "name": "Beginner User",
-      "age": 25,
-      "gender": "Male",
-      "height": 170,
-      "weight": 70,
-      "goal": "Get Toned",
-      "diet": "Vegetarian",
-      "experience": "Never",
-      "training_days": 3,
-      "equipment": ["Bodyweight"],
-      "injuries": ["None"],
-      "meals_per_day": 4,
-
-      "allergies": ["None"],
-      "is_beginner": true,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(beginnerData),
-      );
-
-      final data = json.decode(response.body);
-
-      if (data['success'] == true) {
-        Fluttertoast.showToast(
-          msg: "Beginner plan ready!",
-          backgroundColor: Colors.green,
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                ResultScreen(plans: data['plans'], isBeginner: true),
-          ),
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: data['message'],
-          backgroundColor: Colors.red,
-        );
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: "No internet");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
